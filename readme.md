@@ -57,3 +57,20 @@ A maximum of 1 week is provided to finish the challenge.
 You can find the model available here <https://tfhub.dev/tensorflow/efficientdet/lite2/detection/1> with some example code on how to perform the inference.
 
 The tar file containing the model is also available within `model` folder.
+
+
+##Design
+    project contains partially MVVM archtecture with navigation component (i use the approach "dont over engineer").
+        .Unlike most of android apps use multiple activities google now incourageing single activity and multiple fragments. 
+        .So there are one amin activity which 2 fragments 
+            1)Image Capture Fragment
+                a)Image Capture Fragment is responsible to capture image (custom camera created to get more controll in future). once it capture the photo i saved the in app's document directory (not using photos app for security reasons).
+                b)On complition of capturing and saving photo I pass uri of photos to other fragement(Image Processing Fragment). 
+                NOTE: i am also checking user permission to access camera and availibility of camera hardware.
+            2)Image Processing Fragment
+                a) reading of passed uri and then set the image into image view and call the startDetection method. this fragement usign MVVM architecture due to nature of work so ViewMOdel is responsibel to talk to Object Dectection repo class (this class is interface between tensorflow and our application in case in future you want to remove tensor flow and use somehting else jsut make changes here and no need to touch whole app.) Object Dectection repo uses Some of SOLID principles. 
+                b) startDetection start the processing and i show spinner to user and if we found any objects i show it in list otherwise a toast with message.
+            3)Saving image and Detections
+                a) as i already saved the image in app's document dir i am also saving the detected objects list into from of txt file at same place with same name. 
+                    for example image name(which is timestamp + jgp) is 12345678.jpg' saved detection's file also 12345678.txt. i used this jsut for shoing you i am saving data and in future we can improve it. 
+                Note) for now i am not read stored detections. 
